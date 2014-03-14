@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 
   has_secure_password
+  has_many :microposts, dependent: :destroy
 
   validates :password, length: { minimum: 6}
 
@@ -15,6 +16,11 @@ class User < ActiveRecord::Base
 
   def User.hash(token)
     Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  def feed
+    #this is the preliminary
+    Micropost.where("user_id = ?", id)
   end
 
   private
